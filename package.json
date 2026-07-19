@@ -1,0 +1,16 @@
+{
+  "name": "invitacion-luci-silvi",
+  "version": "1.0.0",
+  "description": "Invitación virtual de 15 años - Luciana y Silvana",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
