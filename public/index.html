@@ -9,10 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- PRECARGA de recursos pesados -->
-    <link rel="preload" href="tarjeta-lys.webp" as="image" type="image/webp">
-    <link rel="preload" href="fondo.webp" as="image" type="image/webp">
-    <link rel="preload" href="song.mp3" as="fetch" crossorigin>
+    <!-- PRECARGA: SOLO la imagen de portada primero (98KB) -->
+    <link rel="preload" href="tarjeta-lys.webp" as="image" type="image/webp" fetchpriority="high">
 
     <style>
         :root {
@@ -659,7 +657,7 @@
      SCREEN 1: IMAGEN ESTÁTICA DE ENTRADA
 ═══════════════════════════════════════ -->
 <div id="screen-cover">
-    <img src="tarjeta-lys.webp" alt="Invitación 15 Años" class="cover-image" id="coverImg">
+    <img src="tarjeta-lys.webp" alt="Invitación 15 Años" class="cover-image" id="coverImg" fetchpriority="high">
 
     <!-- Partículas decorativas -->
     <div class="sparkle-container">
@@ -671,25 +669,17 @@
         <div class="sparkle"></div>
     </div>
 
-    <button id="btnEnter" class="btn-enter" onclick="startExperience()">
-        <i class="fas fa-envelope-open"></i> Abrir Invitación
+    <button id="btnEnter" class="btn-enter" onclick="startExperience()" style="display:none;">
+        <i class="fas fa-envelope-open"></i> <span id="btnLabel">Abrir Invitación</span>
     </button>
-</div>
-
-<!-- ═══════════════════════════════════════
-     LOADING (mientras carga el video)
-═══════════════════════════════════════ -->
-<div id="loadingOverlay" class="loading-overlay">
-    <div class="loader"></div>
-    <p class="text-gold font-serif" style="font-size:1.1rem; letter-spacing: 2px;">Preparando tu invitación...</p>
 </div>
 
 <!-- ═══════════════════════════════════════
      SCREEN 2: VIDEO INTRO
 ═══════════════════════════════════════ -->
 <div id="screen-video">
-    <video id="introVideo" playsinline preload="auto" muted>
-        <source src="intro.mp4" type="video/mp4">
+    <video id="introVideo" playsinline preload="none" muted>
+        <source src="intro.m4v" type="video/mp4">
     </video>
     <button class="btn-skip" id="btnSkip" onclick="skipVideo()">
         Saltar <i class="fas fa-forward"></i>
@@ -884,41 +874,87 @@
     const screenCover   = document.getElementById('screen-cover');
     const screenVideo   = document.getElementById('screen-video');
     const screenCard    = document.getElementById('screen-card');
-    const loadingOvl    = document.getElementById('loadingOverlay');
     const musicBtn      = document.getElementById('musicToggleBtn');
+    const coverImg      = document.getElementById('coverImg');
+    const btnEnter      = document.getElementById('btnEnter');
+    const btnLabel      = document.getElementById('btnLabel');
 
     let isMusicPlaying = false;
     let videoReady     = false;
+    let audioReady     = false;
 
     /* ── Volumen de música más suave ── */
     bgMusic.volume = 0.35;
 
-    /* ── Precarga agresiva del video ── */
-    introVideo.addEventListener('canplaythrough', () => {
-        videoReady = true;
-    });
+    /* ════════════════════════════════════════
+       CARGA PROGRESIVA PARA MÓVILES
+       Fase 1: Imagen portada (98KB) → mostrar botón
+       Fase 2: Fondo tarjeta (417KB) + audio (874KB) + video (1.3MB) en background
+    ════════════════════════════════════════ */
 
-    // Forzar carga en segundo plano inmediatamente
-    introVideo.load();
+    // FASE 1: Cuando la imagen de portada carga → mostrar botón
+    function onCoverReady() {
+        btnEnter.style.display = '';
+        // FASE 2: Precargar recursos pesados en segundo plano
+        startBackgroundPreload();
+    }
 
-    // Fetch adicional para que el navegador cachee el video
-    if ('fetch' in window) {
-        fetch('intro.mp4').then(r => r.blob()).then(() => {
+    if (coverImg.complete && coverImg.naturalHeight > 0) {
+        onCoverReady();
+    } else {
+        coverImg.addEventListener('load', onCoverReady, { once: true });
+        // Si la imagen falla, mostrar botón igual
+        coverImg.addEventListener('error', () => { btnEnter.style.display = ''; }, { once: true });
+    }
+
+    // FASE 2: Precargar en background
+    function startBackgroundPreload() {
+        // Precargar audio
+        bgMusic.preload = 'auto';
+        bgMusic.load();
+        bgMusic.addEventListener('canplaythrough', () => { audioReady = true; }, { once: true });
+
+        // Precargar video
+        introVideo.preload = 'auto';
+        introVideo.load();
+        introVideo.addEventListener('canplaythrough', () => {
             videoReady = true;
-            introVideo.load();
-        }).catch(() => {});
+            updateButtonState();
+        }, { once: true });
+
+        // Precargar fondo de la tarjeta
+        const bgImg = new Image();
+        bgImg.src = 'fondo.webp';
+    }
+
+    function updateButtonState() {
+        if (videoReady) {
+            btnLabel.textContent = 'Abrir Invitación';
+        }
     }
 
     /* ── PASO 1: Click en "Abrir Invitación" ── */
     function startExperience() {
-        // Iniciar música inmediatamente (en bucle, volumen suave)
+        // Iniciar música inmediatamente
         bgMusic.volume = 0.35;
         bgMusic.play().then(() => {
             isMusicPlaying = true;
         }).catch(err => console.log('Autoplay blocked', err));
 
-        // Ir al video directamente (ya debería estar cacheado)
-        launchVideo();
+        if (videoReady) {
+            // Video cacheado → lanzar directo
+            launchVideo();
+        } else {
+            // Video aún cargando → mostrar indicador y esperar
+            btnEnter.style.pointerEvents = 'none';
+            btnLabel.textContent = 'Cargando...';
+            introVideo.preload = 'auto';
+            introVideo.load();
+            introVideo.addEventListener('canplaythrough', () => {
+                videoReady = true;
+                launchVideo();
+            }, { once: true });
+        }
     }
 
     /* ── PASO 2: Reproducir Video Intro ── */
