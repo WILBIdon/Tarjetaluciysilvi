@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!-- PRECARGA de recursos pesados -->
-    <link rel="preload" href="intro.mp4" as="video" type="video/mp4">
-    <link rel="preload" href="song.mp3" as="audio">
+    <link rel="preload" href="tarjeta-lys.webp" as="image" type="image/webp">
+    <link rel="preload" href="fondo.webp" as="image" type="image/webp">
+    <link rel="preload" href="song.mp3" as="fetch" crossorigin>
 
     <style>
         :root {
@@ -273,13 +274,25 @@
         /* ══ FONDO: imagen cubre todo ══ */
         .page {
             min-height: 100vh;
-            background-image: url('fondo.png');
+            background-image: url('fondo.webp');
             background-size: cover;
             background-position: top center;
             background-repeat: no-repeat;
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+        }
+
+        /* Viñeta sutil dorada en la parte inferior */
+        .page::after {
+            content: '';
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%; height: 35vh;
+            background: linear-gradient(to top, rgba(2,8,4,0.6) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 10;
         }
 
         /* Espacio superior para que se vean las máscaras */
@@ -296,6 +309,26 @@
             max-width: 290px;
             text-align: center;
             padding-bottom: 2.5rem;
+            position: relative;
+            z-index: 20;
+        }
+
+        /* ══ Animaciones escalonadas de entrada ══ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .reveal-d1 { animation-delay: 0.2s; }
+        .reveal-d2 { animation-delay: 0.5s; }
+        .reveal-d3 { animation-delay: 0.8s; }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ══ NOMBRE ══ */
@@ -306,6 +339,25 @@
             margin-bottom: 1rem;
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+            position: relative;
+            border: 1px solid rgba(233,182,73,0.08);
+        }
+
+        /* Aura dorada detrás del name-box */
+        .name-box::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 26px;
+            background: radial-gradient(ellipse at center, rgba(233,182,73,0.12) 0%, transparent 70%);
+            animation: auraBreath 4s ease-in-out infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes auraBreath {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50%      { opacity: 1;   transform: scale(1.04); }
         }
 
         .name-wrap {
@@ -334,6 +386,25 @@
             border-bottom: 1px solid rgba(233,182,73,0.25);
             padding: 1rem 0.8rem;
             margin: 0.8rem 0;
+            position: relative;
+        }
+
+        /* Brillo sutil que respira en los bordes de la cita */
+        .quote-box::before,
+        .quote-box::after {
+            content: '';
+            position: absolute;
+            left: 15%; right: 15%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(249,217,118,0.5), transparent);
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+        .quote-box::before { top: -1px; }
+        .quote-box::after  { bottom: -1px; animation-delay: 1.5s; }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.3; transform: scaleX(0.7); }
+            50%      { opacity: 1;   transform: scaleX(1); }
         }
 
         /* ══ BOTONES ══ */
@@ -362,13 +433,43 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+            /* Entrada escalonada */
+            opacity: 0;
+            transform: translateY(15px);
+            animation: btnReveal 0.8s ease forwards;
+        }
+
+        .btn-gold:nth-child(1) { animation-delay: 1.0s; }
+        .btn-gold:nth-child(2) { animation-delay: 1.2s; }
+        .btn-gold:nth-child(3) { animation-delay: 1.4s; }
+        .btn-gold:nth-child(4) { animation-delay: 1.6s; }
+
+        @keyframes btnReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Shimmer dorado que cruza el botón */
+        .btn-gold::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(249,217,118,0.15), transparent);
+            transition: 0.6s;
+        }
+
+        .btn-gold:hover::before {
+            left: 100%;
         }
 
         .btn-gold:hover, .btn-gold:active {
             background: rgba(233,182,73,0.18);
             border-color: var(--gold-light);
-            box-shadow: 0 0 16px rgba(233,182,73,0.3);
+            box-shadow: 0 0 20px rgba(233,182,73,0.3), 0 0 40px rgba(233,182,73,0.1);
+            transform: translateY(-2px);
         }
 
         /* ══ MODALES (bottom sheet en móvil) ══ */
@@ -500,6 +601,11 @@
         }
         .music-btn.visible {
             display: flex;
+            animation: fadeInMusic 0.5s ease forwards;
+        }
+        @keyframes fadeInMusic {
+            from { opacity: 0; transform: scale(0.8); }
+            to   { opacity: 1; transform: scale(1); }
         }
         .music-btn:hover {
             background: rgba(233,182,73,0.2);
@@ -612,7 +718,7 @@
         <div class="card">
 
             <!-- Nombres -->
-            <div class="name-box">
+            <div class="name-box reveal reveal-d1">
                 <h1 class="font-script text-gold name-wrap"
                     style="font-size: clamp(2.8rem, 13vw, 4.2rem); margin:0;">
                     Luciana
@@ -625,13 +731,23 @@
                 </h1>
             </div>
 
+            <!-- Pequeño ornamento decorativo -->
+            <div style="text-align:center; margin: 0.2rem 0 0.4rem; opacity:0; animation: revealUp 1s 0.4s cubic-bezier(0.16,1,0.3,1) forwards;">
+                <span style="color:var(--gold-mid); font-size:0.7rem; letter-spacing: 6px; text-transform:uppercase; font-weight:300;">✦ &nbsp;Mis 15 Años&nbsp; ✦</span>
+            </div>
+
             <!-- Cita -->
-            <div class="quote-box">
+            <div class="quote-box reveal reveal-d2">
                 <p class="font-serif italic text-gray-200 leading-snug"
                    style="font-size: clamp(0.85rem, 3.2vw, 1rem);">
                     "Dos historias que siempre han caminado de la mano. Hoy queremos celebrar este momento tan especial con quienes han sido parte de nuestro camino y de nuestros recuerdos más felices."
                 </p>
             </div>
+
+            <!-- Subtexto mágico -->
+            <p class="reveal reveal-d2" style="text-align:center; margin: 0.3rem 0 0.8rem; opacity:0; animation: revealUp 1s 0.7s cubic-bezier(0.16,1,0.3,1) forwards;">
+                <span style="color:rgba(233,182,73,0.5); font-size:0.65rem; letter-spacing: 3px; text-transform:uppercase;">Acompáñanos en esta noche mágica</span>
+            </p>
 
             <!-- Botones -->
             <div class="btn-wrap">
@@ -774,33 +890,35 @@
     let isMusicPlaying = false;
     let videoReady     = false;
 
+    /* ── Volumen de música más suave ── */
+    bgMusic.volume = 0.35;
+
     /* ── Precarga agresiva del video ── */
     introVideo.addEventListener('canplaythrough', () => {
         videoReady = true;
     });
 
-    // Forzar carga temprana
+    // Forzar carga en segundo plano inmediatamente
     introVideo.load();
+
+    // Fetch adicional para que el navegador cachee el video
+    if ('fetch' in window) {
+        fetch('intro.mp4').then(r => r.blob()).then(() => {
+            videoReady = true;
+            introVideo.load();
+        }).catch(() => {});
+    }
 
     /* ── PASO 1: Click en "Abrir Invitación" ── */
     function startExperience() {
-        // Iniciar música inmediatamente (en bucle)
+        // Iniciar música inmediatamente (en bucle, volumen suave)
+        bgMusic.volume = 0.35;
         bgMusic.play().then(() => {
             isMusicPlaying = true;
         }).catch(err => console.log('Autoplay blocked', err));
 
-        if (videoReady) {
-            // Video ya cargado → ir directo
-            launchVideo();
-        } else {
-            // Mostrar loading y esperar
-            loadingOvl.classList.add('active');
-            introVideo.addEventListener('canplaythrough', () => {
-                videoReady = true;
-                loadingOvl.classList.remove('active');
-                launchVideo();
-            }, { once: true });
-        }
+        // Ir al video directamente (ya debería estar cacheado)
+        launchVideo();
     }
 
     /* ── PASO 2: Reproducir Video Intro ── */
