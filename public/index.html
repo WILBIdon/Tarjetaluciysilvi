@@ -2,11 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mis 15 Años - Luciana y Silvana</title>
+    <meta name="description" content="Invitación a los 15 años de Luciana y Silvana - 24 de Octubre, Salón STELAR">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- PRECARGA de recursos pesados -->
+    <link rel="preload" href="intro.mp4" as="video" type="video/mp4">
+    <link rel="preload" href="song.mp3" as="audio">
+
     <style>
         :root {
             --gold-light: #f9d976;
@@ -22,10 +28,247 @@
             font-family: 'Montserrat', sans-serif;
             color: #fff;
             overflow-x: hidden;
+            background: #020804;
         }
 
         .font-script { font-family: 'Great Vibes', cursive; }
         .font-serif  { font-family: 'Cormorant Garamond', serif; }
+
+        /* ═══════════════════════════════════
+           SCREEN 1: IMAGEN ESTÁTICA + BOTÓN
+        ═══════════════════════════════════ */
+        #screen-cover {
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            background: #020804;
+            transition: opacity 0.8s ease;
+        }
+
+        #screen-cover.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cover-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        /* Botón dorado de entrada */
+        .btn-enter {
+            position: relative;
+            z-index: 10;
+            margin-bottom: 12vh;
+            padding: 18px 52px;
+            border: 2px solid var(--gold-mid);
+            border-radius: 60px;
+            background: linear-gradient(135deg, rgba(184,134,11,0.25) 0%, rgba(233,182,73,0.12) 50%, rgba(184,134,11,0.25) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--gold-light);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow:
+                0 0 30px rgba(233,182,73,0.25),
+                0 0 60px rgba(233,182,73,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+            animation: btnPulse 2.5s ease-in-out infinite, btnFloat 3s ease-in-out infinite;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .btn-enter::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(249,217,118,0.3), transparent);
+            animation: btnShimmer 3s ease-in-out infinite;
+        }
+
+        .btn-enter::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 60px;
+            background: linear-gradient(45deg, var(--gold-dark), var(--gold-light), var(--gold-dark), var(--gold-light));
+            background-size: 300% 300%;
+            z-index: -1;
+            animation: borderGlow 4s ease infinite;
+            opacity: 0.6;
+        }
+
+        .btn-enter:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow:
+                0 0 40px rgba(233,182,73,0.4),
+                0 0 80px rgba(233,182,73,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            border-color: var(--gold-light);
+        }
+
+        .btn-enter:active {
+            transform: scale(0.97);
+        }
+
+        .btn-enter i {
+            margin-right: 10px;
+            font-size: 0.9rem;
+            animation: iconTwinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(233,182,73,0.25), 0 0 60px rgba(233,182,73,0.1); }
+            50% { box-shadow: 0 0 40px rgba(233,182,73,0.4), 0 0 80px rgba(233,182,73,0.15); }
+        }
+
+        @keyframes btnFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes btnShimmer {
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
+        }
+
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes iconTwinkle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.15); }
+        }
+
+        /* Pequeñas partículas doradas alrededor del botón */
+        .sparkle-container {
+            position: absolute;
+            bottom: 10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 120px;
+            pointer-events: none;
+            z-index: 9;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--gold-light);
+            border-radius: 50%;
+            animation: sparkleFloat 3s ease-in-out infinite;
+            box-shadow: 0 0 6px var(--gold-mid);
+        }
+
+        .sparkle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .sparkle:nth-child(2) { left: 85%; top: 30%; animation-delay: 0.5s; }
+        .sparkle:nth-child(3) { left: 30%; top: 80%; animation-delay: 1s; }
+        .sparkle:nth-child(4) { left: 70%; top: 10%; animation-delay: 1.5s; }
+        .sparkle:nth-child(5) { left: 50%; top: 60%; animation-delay: 0.3s; }
+        .sparkle:nth-child(6) { left: 15%; top: 55%; animation-delay: 0.8s; }
+
+        @keyframes sparkleFloat {
+            0%, 100% { opacity: 0; transform: scale(0) translateY(0); }
+            50% { opacity: 1; transform: scale(1) translateY(-15px); }
+        }
+
+        /* ═══════════════════════════════════
+           SCREEN 2: VIDEO INTRO
+        ═══════════════════════════════════ */
+        #screen-video {
+            position: fixed;
+            inset: 0;
+            z-index: 8000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        #screen-video.active {
+            display: flex;
+        }
+
+        #screen-video.fade-out {
+            animation: videoFadeOut 1.2s ease forwards;
+        }
+
+        @keyframes videoFadeOut {
+            0%   { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        #introVideo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Botón de saltar video */
+        .btn-skip {
+            position: absolute;
+            bottom: 30px;
+            right: 24px;
+            z-index: 10;
+            padding: 10px 24px;
+            border: 1px solid rgba(233,182,73,0.4);
+            border-radius: 30px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            color: rgba(255,255,255,0.7);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            animation: fadeInSkip 1s ease 2s forwards;
+        }
+
+        .btn-skip:hover {
+            background: rgba(233,182,73,0.15);
+            color: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+
+        @keyframes fadeInSkip {
+            to { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════
+           SCREEN 3: TARJETA COMPLETA
+        ═══════════════════════════════════ */
+        #screen-card {
+            display: none;
+        }
+
+        #screen-card.active {
+            display: block;
+            animation: cardReveal 1.5s ease forwards;
+        }
+
+        @keyframes cardReveal {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
 
         /* ══ FONDO: imagen cubre todo ══ */
         .page {
@@ -34,7 +277,6 @@
             background-size: cover;
             background-position: top center;
             background-repeat: no-repeat;
-            /* Sin fixed para que funcione bien en iOS */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -42,7 +284,6 @@
 
         /* Espacio superior para que se vean las máscaras */
         .spacer-top {
-            /* 52% del viewport → en móvil ~370px de imagen visible */
             height: 52vh;
             min-height: 240px;
             width: 100%;
@@ -51,8 +292,8 @@
 
         /* ══ TARJETA ESTRECHA ══ */
         .card {
-            width: 82%;          /* estrecha en móvil */
-            max-width: 290px;    /* tope absoluto */
+            width: 82%;
+            max-width: 290px;
             text-align: center;
             padding-bottom: 2.5rem;
         }
@@ -67,10 +308,9 @@
             -webkit-backdrop-filter: blur(4px);
         }
 
-        /* El gradiente clip corta ascendentes: damos espacio con padding inline */
         .name-wrap {
             display: block;
-            padding: 0.3em 0.1em 0.2em;  /* espacio para ascendentes arriba y descendentes abajo */
+            padding: 0.3em 0.1em 0.2em;
             line-height: 1.15;
         }
 
@@ -236,7 +476,7 @@
         }
         .btn-modal:hover { background: rgba(233,182,73,0.18); }
 
-        /* ══ BOTÓN DE MÚSICA ══ */
+        /* ══ BOTÓN DE MÚSICA (en la tarjeta) ══ */
         .music-btn {
             position: fixed;
             bottom: 25px;
@@ -246,7 +486,7 @@
             background: rgba(10, 20, 15, 0.65);
             border: 1px solid rgba(233,182,73,0.4);
             border-radius: 50%;
-            display: flex;
+            display: none; /* se muestra cuando llega a screen-card */
             align-items: center;
             justify-content: center;
             color: var(--gold-light);
@@ -257,15 +497,14 @@
             -webkit-backdrop-filter: blur(8px);
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 0 10px rgba(233,182,73,0.1);
-            animation: pulseBtn 2s infinite; /* Llama la atención cuando está en pausa */
+        }
+        .music-btn.visible {
+            display: flex;
         }
         .music-btn:hover {
             background: rgba(233,182,73,0.2);
             transform: scale(1.08);
             border-color: var(--gold-light);
-        }
-        .music-btn.playing {
-            animation: none; /* Se quita el pulso cuando ya suena */
         }
         .music-btn.playing i {
             animation: spinMusic 4s linear infinite;
@@ -273,75 +512,150 @@
         @keyframes spinMusic {
             100% { transform: rotate(360deg); }
         }
-        @keyframes pulseBtn {
-            0% { box-shadow: 0 0 0 0 rgba(233,182,73, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(233,182,73, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(233,182,73, 0); }
+
+        /* ══ LOADING SPINNER (preload indicator) ══ */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9500;
+            background: rgba(2,8,4,0.85);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
         }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loader {
+            width: 50px; height: 50px;
+            border: 3px solid rgba(233,182,73,0.15);
+            border-top: 3px solid var(--gold-mid);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<!-- Audio de fondo -->
-<audio id="bgMusic" src="Surrender.mp3" loop preload="auto"></audio>
-<button id="musicToggleBtn" class="music-btn" onclick="toggleMusic(event)" title="Reproducir/Pausar música">
-    <i class="fas fa-volume-mute"></i>
-</button>
+<!-- ═══════════════════════════════════════
+     AUDIO (precargado, en bucle)
+═══════════════════════════════════════ -->
+<audio id="bgMusic" src="song.mp3" loop preload="auto"></audio>
 
-<!-- Canvas de estrellas flotantes -->
-<canvas id="starsCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;"></canvas>
+<!-- ═══════════════════════════════════════
+     SCREEN 1: IMAGEN ESTÁTICA DE ENTRADA
+═══════════════════════════════════════ -->
+<div id="screen-cover">
+    <img src="tarjeta-lys.webp" alt="Invitación 15 Años" class="cover-image" id="coverImg">
 
-<div class="page">
+    <!-- Partículas decorativas -->
+    <div class="sparkle-container">
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+        <div class="sparkle"></div>
+    </div>
 
-    <!-- Espacio para ver las máscaras y el "15 años" del fondo -->
-    <div class="spacer-top"></div>
+    <button id="btnEnter" class="btn-enter" onclick="startExperience()">
+        <i class="fas fa-envelope-open"></i> Abrir Invitación
+    </button>
+</div>
 
-    <!-- ═══ TARJETA ESTRECHA ═══ -->
-    <div class="card">
+<!-- ═══════════════════════════════════════
+     LOADING (mientras carga el video)
+═══════════════════════════════════════ -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loader"></div>
+    <p class="text-gold font-serif" style="font-size:1.1rem; letter-spacing: 2px;">Preparando tu invitación...</p>
+</div>
 
-        <!-- Nombres -->
-        <div class="name-box">
-            <h1 class="font-script text-gold name-wrap"
-                style="font-size: clamp(2.8rem, 13vw, 4.2rem); margin:0;">
-                Luciana
-            </h1>
-            <p class="font-script text-gold opacity-60"
-               style="font-size: clamp(1.5rem, 6vw, 2rem); margin: -10px 0; line-height:1;">&amp;</p>
-            <h1 class="font-script text-gold name-wrap"
-                style="font-size: clamp(2.8rem, 13vw, 4.2rem); margin:0;">
-                Silvana
-            </h1>
+<!-- ═══════════════════════════════════════
+     SCREEN 2: VIDEO INTRO
+═══════════════════════════════════════ -->
+<div id="screen-video">
+    <video id="introVideo" playsinline preload="auto" muted>
+        <source src="intro.mp4" type="video/mp4">
+    </video>
+    <button class="btn-skip" id="btnSkip" onclick="skipVideo()">
+        Saltar <i class="fas fa-forward"></i>
+    </button>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SCREEN 3: TARJETA COMPLETA
+═══════════════════════════════════════ -->
+<div id="screen-card">
+
+    <!-- Botón de música -->
+    <button id="musicToggleBtn" class="music-btn" onclick="toggleMusic(event)" title="Reproducir/Pausar música">
+        <i class="fas fa-music"></i>
+    </button>
+
+    <!-- Canvas de estrellas flotantes -->
+    <canvas id="starsCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;"></canvas>
+
+    <div class="page">
+
+        <!-- Espacio para ver las máscaras y el "15 años" del fondo -->
+        <div class="spacer-top"></div>
+
+        <!-- ═══ TARJETA ESTRECHA ═══ -->
+        <div class="card">
+
+            <!-- Nombres -->
+            <div class="name-box">
+                <h1 class="font-script text-gold name-wrap"
+                    style="font-size: clamp(2.8rem, 13vw, 4.2rem); margin:0;">
+                    Luciana
+                </h1>
+                <p class="font-script text-gold opacity-60"
+                   style="font-size: clamp(1.5rem, 6vw, 2rem); margin: -10px 0; line-height:1;">&amp;</p>
+                <h1 class="font-script text-gold name-wrap"
+                    style="font-size: clamp(2.8rem, 13vw, 4.2rem); margin:0;">
+                    Silvana
+                </h1>
+            </div>
+
+            <!-- Cita -->
+            <div class="quote-box">
+                <p class="font-serif italic text-gray-200 leading-snug"
+                   style="font-size: clamp(0.85rem, 3.2vw, 1rem);">
+                    "Dos historias que siempre han caminado de la mano. Hoy queremos celebrar este momento tan especial con quienes han sido parte de nuestro camino y de nuestros recuerdos más felices."
+                </p>
+            </div>
+
+            <!-- Botones -->
+            <div class="btn-wrap">
+                <button onclick="openModal('modal-fecha')" class="btn-gold">
+                    <i class="fas fa-calendar-alt"></i> Fecha y Lugar
+                </button>
+                <button onclick="openModal('modal-vestimenta')" class="btn-gold">
+                    <i class="fas fa-tshirt"></i> Código de Vestimenta
+                </button>
+                <button onclick="openModal('modal-regalos')" class="btn-gold">
+                    <i class="fas fa-envelope-open-text"></i> Lluvia de Sobres
+                </button>
+                <button onclick="openModal('modal-asistencia')" class="btn-gold">
+                    <i class="fas fa-check-circle"></i> Confirmar Asistencia
+                </button>
+            </div>
+
         </div>
-
-        <!-- Cita -->
-        <div class="quote-box">
-            <p class="font-serif italic text-gray-200 leading-snug"
-               style="font-size: clamp(0.85rem, 3.2vw, 1rem);">
-                "Dos historias que siempre han caminado de la mano. Hoy queremos celebrar este momento tan especial con quienes han sido parte de nuestro camino y de nuestros recuerdos más felices."
-            </p>
-        </div>
-
-        <!-- Botones -->
-        <div class="btn-wrap">
-            <button onclick="openModal('modal-fecha')" class="btn-gold">
-                <i class="fas fa-calendar-alt"></i> Fecha y Lugar
-            </button>
-            <button onclick="openModal('modal-vestimenta')" class="btn-gold">
-                <i class="fas fa-tshirt"></i> Código de Vestimenta
-            </button>
-            <button onclick="openModal('modal-regalos')" class="btn-gold">
-                <i class="fas fa-envelope-open-text"></i> Lluvia de Sobres
-            </button>
-            <button onclick="openModal('modal-asistencia')" class="btn-gold">
-                <i class="fas fa-check-circle"></i> Confirmar Asistencia
-            </button>
-        </div>
+        <!-- fin .card -->
 
     </div>
-    <!-- fin .card -->
-
+    <!-- fin .page -->
 </div>
-<!-- fin .page -->
+<!-- fin screen-card -->
 
 
 <!-- ═══ MODAL: FECHA Y LUGAR ═══ -->
@@ -444,7 +758,121 @@
 </div>
 
 
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════ -->
 <script>
+    /* ── Referencias ── */
+    const bgMusic       = document.getElementById('bgMusic');
+    const introVideo    = document.getElementById('introVideo');
+    const screenCover   = document.getElementById('screen-cover');
+    const screenVideo   = document.getElementById('screen-video');
+    const screenCard    = document.getElementById('screen-card');
+    const loadingOvl    = document.getElementById('loadingOverlay');
+    const musicBtn      = document.getElementById('musicToggleBtn');
+
+    let isMusicPlaying = false;
+    let videoReady     = false;
+
+    /* ── Precarga agresiva del video ── */
+    introVideo.addEventListener('canplaythrough', () => {
+        videoReady = true;
+    });
+
+    // Forzar carga temprana
+    introVideo.load();
+
+    /* ── PASO 1: Click en "Abrir Invitación" ── */
+    function startExperience() {
+        // Iniciar música inmediatamente (en bucle)
+        bgMusic.play().then(() => {
+            isMusicPlaying = true;
+        }).catch(err => console.log('Autoplay blocked', err));
+
+        if (videoReady) {
+            // Video ya cargado → ir directo
+            launchVideo();
+        } else {
+            // Mostrar loading y esperar
+            loadingOvl.classList.add('active');
+            introVideo.addEventListener('canplaythrough', () => {
+                videoReady = true;
+                loadingOvl.classList.remove('active');
+                launchVideo();
+            }, { once: true });
+        }
+    }
+
+    /* ── PASO 2: Reproducir Video Intro ── */
+    function launchVideo() {
+        // Desvanecer la portada
+        screenCover.classList.add('fade-out');
+
+        setTimeout(() => {
+            screenCover.style.display = 'none';
+            screenVideo.classList.add('active');
+            introVideo.muted = false;
+            introVideo.currentTime = 0;
+            introVideo.play().catch(err => {
+                // Si falla el play con audio, intentar muted
+                console.log('Video play error, trying muted', err);
+                introVideo.muted = true;
+                introVideo.play();
+            });
+        }, 800);
+    }
+
+    /* ── Video termina → mostrar tarjeta ── */
+    introVideo.addEventListener('ended', () => {
+        transitionToCard();
+    });
+
+    /* ── Saltar video ── */
+    function skipVideo() {
+        introVideo.pause();
+        transitionToCard();
+    }
+
+    /* ── PASO 3: Transición a la tarjeta completa ── */
+    function transitionToCard() {
+        screenVideo.classList.add('fade-out');
+
+        setTimeout(() => {
+            screenVideo.style.display = 'none';
+            screenVideo.classList.remove('active', 'fade-out');
+            screenCard.classList.add('active');
+            document.body.style.background = '';
+
+            // Mostrar botón de música
+            musicBtn.classList.add('visible');
+            if (isMusicPlaying) {
+                musicBtn.classList.add('playing');
+            }
+
+            // Iniciar estrellas
+            initStars();
+        }, 1200);
+    }
+
+    /* ── Toggle música ── */
+    function toggleMusic(e) {
+        if (e) e.stopPropagation();
+
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            isMusicPlaying = false;
+            musicBtn.classList.remove('playing');
+            musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else {
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicBtn.innerHTML = '<i class="fas fa-music"></i>';
+            }).catch(err => console.log("Play blocked", err));
+        }
+    }
+
+    /* ── Modales ── */
     function openModal(id) {
         const m = document.getElementById(id);
         m.style.display = 'flex';
@@ -482,199 +910,142 @@
         setTimeout(() => closeModal('modal-asistencia'), 3200);
     }
 
-    /* ─── MÚSICA Y REPRODUCCIÓN ─── */
-    const bgMusic = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicToggleBtn');
-    let isMusicPlaying = false;
+    /* ══════════════════════════════════════
+       ESTRELLAS DORADAS
+    ══════════════════════════════════════ */
+    function initStars() {
+        const canvas = document.getElementById('starsCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
 
-    function toggleMusic(e) {
-        if(e) e.stopPropagation(); // evitar que se propague al body y vuelva a disparar
-        
-        if (isMusicPlaying) {
-            bgMusic.pause();
-            isMusicPlaying = false;
-            musicBtn.classList.remove('playing');
-            musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        } else {
-            bgMusic.play().then(() => {
-                isMusicPlaying = true;
-                musicBtn.classList.add('playing');
-                musicBtn.innerHTML = '<i class="fas fa-music"></i>';
-            }).catch(err => console.log("Autoplay bloqueado", err));
+        let W, H;
+        const stars = [];
+        const MAX_STARS = 7;
+        const GOLDS = ['#f9d976','#e9b649','#ffd700','#ffe066','#b8860b'];
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
         }
-    }
+        window.addEventListener('resize', resize);
+        resize();
 
-    // Intentar reproducir automáticamente con el primer clic/toque en la pantalla
-    document.body.addEventListener('click', function(e) {
-        // Evitamos ejecutarlo si el clic fue en el botón mismo
-        if (!isMusicPlaying && !e.target.closest('#musicToggleBtn')) {
-            toggleMusic();
-        }
-    }, { once: true });
-    
-    // Intentar autoplay on load (muchos navegadores lo bloquean pero vale la pena intentar)
-    window.addEventListener('DOMContentLoaded', () => {
-        bgMusic.play().then(() => {
-            isMusicPlaying = true;
-            musicBtn.classList.add('playing');
-            musicBtn.innerHTML = '<i class="fas fa-music"></i>';
-        }).catch(err => {
-            console.log("Autoplay bloqueado por el navegador. Se requiere interacción del usuario.");
-            musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        });
-    });
-
-</script>
-
-<script>
-/* ══════════════════════════════════════
-   ESTRELLAS DORADAS QUE SE DESINTEGRAN
-══════════════════════════════════════ */
-(function() {
-    const canvas = document.getElementById('starsCanvas');
-    const ctx    = canvas.getContext('2d');
-
-    let W, H;
-    const stars    = [];
-    const MAX_STARS = 7;
-
-    // Paleta dorada
-    const GOLDS = ['#f9d976','#e9b649','#ffd700','#ffe066','#b8860b'];
-
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    /* Dibuja una estrella de 5 puntas */
-    function drawStar(cx, cy, r, rot, alpha, gold) {
-        ctx.save();
-        ctx.globalAlpha = alpha;
-        ctx.translate(cx, cy);
-        ctx.rotate(rot);
-        ctx.beginPath();
-        for (let i = 0; i < 10; i++) {
-            const angle = (Math.PI / 5) * i - Math.PI / 2;
-            const radius = i % 2 === 0 ? r : r * 0.42;
-            ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
-        }
-        ctx.closePath();
-        ctx.fillStyle = gold;
-        ctx.shadowColor = gold;
-        ctx.shadowBlur  = 8;
-        ctx.fill();
-        ctx.restore();
-    }
-
-    /* Partículas de desintegración */
-    function spawnParticles(x, y, gold) {
-        const count = 8 + Math.floor(Math.random() * 6);
-        for (let i = 0; i < count; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 0.6 + Math.random() * 2;
-            stars.push({
-                type   : 'particle',
-                x, y,
-                vx     : Math.cos(angle) * speed,
-                vy     : Math.sin(angle) * speed - 0.5,
-                r      : 1.5 + Math.random() * 2,
-                alpha  : 0.9,
-                decay  : 0.025 + Math.random() * 0.02,
-                gold
-            });
-        }
-    }
-
-    /* Crea una estrella nueva desde arriba */
-    function createStar() {
-        return {
-            type   : 'star',
-            x      : Math.random() * W,
-            y      : -20,
-            vy     : 0.6 + Math.random() * 1.2,
-            vx     : (Math.random() - 0.5) * 0.5,
-            r      : 3 + Math.random() * 4,
-            rot    : Math.random() * Math.PI * 2,
-            rotV   : (Math.random() - 0.5) * 0.04,
-            alpha  : 0.7 + Math.random() * 0.3,
-            decay  : 0,           // empieza a decaer al llegar al 75% de H
-            gold   : GOLDS[Math.floor(Math.random() * GOLDS.length)],
-            burst  : false
-        };
-    }
-
-    // Población inicial
-    for (let i = 0; i < MAX_STARS; i++) {
-        const s = createStar();
-        s.y = Math.random() * H;  // distribuidas por la pantalla al inicio
-        stars.push(s);
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, W, H);
-
-        // Reponer estrellas
-        const starCount = stars.filter(s => s.type === 'star').length;
-        if (starCount < MAX_STARS && Math.random() < 0.04) {
-            stars.push(createStar());
+        function drawStar(cx, cy, r, rot, alpha, gold) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.translate(cx, cy);
+            ctx.rotate(rot);
+            ctx.beginPath();
+            for (let i = 0; i < 10; i++) {
+                const angle = (Math.PI / 5) * i - Math.PI / 2;
+                const radius = i % 2 === 0 ? r : r * 0.42;
+                ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius);
+            }
+            ctx.closePath();
+            ctx.fillStyle = gold;
+            ctx.shadowColor = gold;
+            ctx.shadowBlur  = 8;
+            ctx.fill();
+            ctx.restore();
         }
 
-        for (let i = stars.length - 1; i >= 0; i--) {
-            const s = stars[i];
-
-            if (s.type === 'star') {
-                s.x   += s.vx;
-                s.y   += s.vy;
-                s.rot += s.rotV;
-
-                // Comienza a desintegrarse cuando pasa el 70% de la pantalla
-                if (s.y > H * 0.70) {
-                    s.decay += 0.012;
-                    s.alpha  = Math.max(0, s.alpha - s.decay);
-                    s.r     *= 0.97;  // encoge
-                }
-
-                // Explota en partículas cuando es casi invisible
-                if (s.alpha < 0.15 && !s.burst) {
-                    s.burst = true;
-                    spawnParticles(s.x, s.y, s.gold);
-                }
-
-                if (s.alpha <= 0 || s.y > H + 30) {
-                    stars.splice(i, 1);
-                    continue;
-                }
-
-                drawStar(s.x, s.y, s.r, s.rot, s.alpha, s.gold);
-
-            } else {
-                // Partícula
-                s.x    += s.vx;
-                s.y    += s.vy;
-                s.vy   += 0.05;  // gravedad ligera
-                s.alpha = Math.max(0, s.alpha - s.decay);
-
-                if (s.alpha <= 0) { stars.splice(i, 1); continue; }
-
-                ctx.save();
-                ctx.globalAlpha = s.alpha;
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fillStyle   = s.gold;
-                ctx.shadowColor = s.gold;
-                ctx.shadowBlur  = 6;
-                ctx.fill();
-                ctx.restore();
+        function spawnParticles(x, y, gold) {
+            const count = 8 + Math.floor(Math.random() * 6);
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.6 + Math.random() * 2;
+                stars.push({
+                    type: 'particle', x, y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 0.5,
+                    r: 1.5 + Math.random() * 2,
+                    alpha: 0.9,
+                    decay: 0.025 + Math.random() * 0.02,
+                    gold
+                });
             }
         }
 
-        requestAnimationFrame(animate);
-    }
+        function createStar() {
+            return {
+                type: 'star',
+                x: Math.random() * W, y: -20,
+                vy: 0.6 + Math.random() * 1.2,
+                vx: (Math.random() - 0.5) * 0.5,
+                r: 3 + Math.random() * 4,
+                rot: Math.random() * Math.PI * 2,
+                rotV: (Math.random() - 0.5) * 0.04,
+                alpha: 0.7 + Math.random() * 0.3,
+                decay: 0,
+                gold: GOLDS[Math.floor(Math.random() * GOLDS.length)],
+                burst: false
+            };
+        }
 
-    animate();
-})();
+        for (let i = 0; i < MAX_STARS; i++) {
+            const s = createStar();
+            s.y = Math.random() * H;
+            stars.push(s);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, W, H);
+
+            const starCount = stars.filter(s => s.type === 'star').length;
+            if (starCount < MAX_STARS && Math.random() < 0.04) {
+                stars.push(createStar());
+            }
+
+            for (let i = stars.length - 1; i >= 0; i--) {
+                const s = stars[i];
+
+                if (s.type === 'star') {
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    s.rot += s.rotV;
+
+                    if (s.y > H * 0.70) {
+                        s.decay += 0.012;
+                        s.alpha = Math.max(0, s.alpha - s.decay);
+                        s.r *= 0.97;
+                    }
+
+                    if (s.alpha < 0.15 && !s.burst) {
+                        s.burst = true;
+                        spawnParticles(s.x, s.y, s.gold);
+                    }
+
+                    if (s.alpha <= 0 || s.y > H + 30) {
+                        stars.splice(i, 1);
+                        continue;
+                    }
+
+                    drawStar(s.x, s.y, s.r, s.rot, s.alpha, s.gold);
+                } else {
+                    s.x += s.vx;
+                    s.y += s.vy;
+                    s.vy += 0.05;
+                    s.alpha = Math.max(0, s.alpha - s.decay);
+
+                    if (s.alpha <= 0) { stars.splice(i, 1); continue; }
+
+                    ctx.save();
+                    ctx.globalAlpha = s.alpha;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = s.gold;
+                    ctx.shadowColor = s.gold;
+                    ctx.shadowBlur = 6;
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    }
 </script>
 
 </body>
