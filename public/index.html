@@ -24,8 +24,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- PRECARGA: SOLO la imagen de portada primero (98KB) -->
-    <link rel="preload" href="tarjeta-lys.webp" as="image" type="image/webp" fetchpriority="high">
+    <!-- PRECARGA: SOLO la imagen de portada primero -->
+    <link rel="preload" href="foto-inicial.webp" as="image" type="image/webp" fetchpriority="high">
 
     <style>
         :root {
@@ -287,7 +287,7 @@
         /* ══ FONDO: imagen cubre todo ══ */
         .page {
             min-height: 100vh;
-            background-image: url('fondo.webp');
+            background-image: url('fondo-nuevo.webp');
             background-size: cover;
             background-position: top center;
             background-repeat: no-repeat;
@@ -935,7 +935,7 @@
      SCREEN 1: IMAGEN ESTÁTICA DE ENTRADA
 ═══════════════════════════════════════ -->
 <div id="screen-cover">
-    <img src="tarjeta-lys.webp" alt="Invitación 15 Años" class="cover-image" id="coverImg" fetchpriority="high">
+    <img src="foto-inicial.webp" alt="Invitación 15 Años" class="cover-image" id="coverImg" fetchpriority="high">
 
     <!-- Partículas decorativas -->
     <div class="sparkle-container">
@@ -957,7 +957,7 @@
 ═══════════════════════════════════════ -->
 <div id="screen-video">
     <video id="introVideo" playsinline preload="none" muted>
-        <source src="intro.m4v" type="video/mp4">
+        <source src="intro.mp4" type="video/mp4">
     </video>
     <button class="btn-skip" id="btnSkip" onclick="skipVideo()">
         Saltar <i class="fas fa-forward"></i>
@@ -1202,7 +1202,7 @@
 
         // Precargar fondo de la tarjeta
         const bgImg = new Image();
-        bgImg.src = 'fondo.webp';
+        bgImg.src = 'fondo-nuevo.webp';
     }
 
     function updateButtonState() {
