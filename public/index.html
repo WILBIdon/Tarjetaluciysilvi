@@ -7,17 +7,17 @@
     <meta name="description" content="Invitación a los 15 años de Luciana y Silvana - 24 de Octubre, Hotel Terraza Corales">
 
     <!-- Open Graph / WhatsApp Preview -->
-    <meta property="og:title" content="Mis 15 Años - Luciana y Silvana">
-    <meta property="og:description" content="¡Acompáñanos en esta noche mágica! Viernes, 24 de Octubre en Diez Hotel - Terraza Corales.">
+    <meta property="og:title" content="Esta es una invitación especial para ti ✨">
+    <meta property="og:description" content="Luciana & Silvana te invitan a celebrar sus 15 Años 🎉 Viernes, 24 de Octubre · Diez Hotel - Terraza Corales">
     <meta property="og:image" content="/og-image.jpg">
-    <meta property="og:image:width" content="750">
-    <meta property="og:image:height" content="750">
+    <meta property="og:image:width" content="602">
+    <meta property="og:image:height" content="1080">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card (también sirve para iMessage) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Mis 15 Años - Luciana y Silvana">
-    <meta name="twitter:description" content="¡Acompáñanos en esta noche mágica! Viernes, 24 de Octubre en Diez Hotel - Terraza Corales.">
+    <meta name="twitter:title" content="Esta es una invitación especial para ti ✨">
+    <meta name="twitter:description" content="Luciana & Silvana te invitan a celebrar sus 15 Años 🎉 Viernes, 24 de Octubre · Diez Hotel - Terraza Corales">
     <meta name="twitter:image" content="/og-image.jpg">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -753,9 +753,9 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 300;
             justify-content: center;
             align-items: flex-end;
@@ -763,25 +763,66 @@
 
         @media (min-width: 560px) {
             .modal-overlay { align-items: center; }
-            .modal-card    { border-radius: 20px; }
+            .modal-card    { border-radius: 24px; }
         }
 
         .modal-overlay.active { display: flex; }
 
         .modal-card {
-            background: rgba(8, 20, 13, 0.92);
-            border: 1px solid rgba(233,182,73,0.3);
-            border-radius: 20px 20px 0 0;
-            padding: 2rem 1.5rem 2.2rem;
+            background: linear-gradient(165deg, rgba(12, 28, 18, 0.96) 0%, rgba(6, 14, 10, 0.98) 100%);
+            border: 1px solid rgba(233,182,73,0.25);
+            border-top: 2px solid rgba(233,182,73,0.4);
+            border-radius: 24px 24px 0 0;
+            padding: 2rem 1.5rem 2.5rem;
             width: 100%;
             max-width: 440px;
             text-align: center;
             position: relative;
-            animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+            animation: slideUp 0.5s cubic-bezier(0.16,1,0.3,1);
+            box-shadow:
+                0 -10px 60px rgba(0,0,0,0.5),
+                0 0 40px rgba(233,182,73,0.06),
+                inset 0 1px 0 rgba(233,182,73,0.15);
+            overflow: hidden;
+        }
+
+        /* Decorative corner ornaments on modals */
+        .modal-card::before {
+            content: '✦';
+            position: absolute;
+            top: 52px; left: 18px;
+            color: rgba(233,182,73,0.15);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+        .modal-card::after {
+            content: '✦';
+            position: absolute;
+            top: 52px; right: 18px;
+            color: rgba(233,182,73,0.15);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        /* Subtle shimmer on modal background */
+        .modal-shimmer {
+            position: absolute;
+            top: 0; left: -50%;
+            width: 200%; height: 100%;
+            background: linear-gradient(90deg, transparent 30%, rgba(233,182,73,0.03) 50%, transparent 70%);
+            animation: modalShimmer 6s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes modalShimmer {
+            0%, 100% { transform: translateX(-30%); }
+            50% { transform: translateX(30%); }
         }
 
         @media (min-width: 560px) {
-            .modal-card { animation: popIn 0.35s cubic-bezier(0.175,0.885,0.32,1.275); }
+            .modal-card {
+                animation: popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+                border-top: 1px solid rgba(233,182,73,0.35);
+            }
         }
 
         @keyframes slideUp {
@@ -794,64 +835,185 @@
         }
 
         .handle {
-            width: 40px; height: 4px;
-            background: rgba(255,255,255,0.18);
+            width: 44px; height: 4px;
+            background: linear-gradient(to right, transparent, rgba(233,182,73,0.35), transparent);
             border-radius: 4px;
-            margin: 0 auto 1.4rem;
+            margin: 0 auto 1.6rem;
         }
         @media(min-width:560px){ .handle{ display:none; } }
 
         .btn-close {
-            position: absolute; top: 16px; right: 18px;
-            background: none; border: none;
-            color: rgba(255,255,255,0.35);
-            font-size: 1.2rem; cursor: pointer;
-            transition: color 0.3s;
+            position: absolute; top: 14px; right: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50%;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem; cursor: pointer;
+            transition: all 0.3s;
         }
-        .btn-close:hover { color: var(--gold-light); }
+        .btn-close:hover {
+            color: var(--gold-light);
+            background: rgba(233,182,73,0.1);
+            border-color: rgba(233,182,73,0.3);
+        }
 
         .divider {
             height: 1px;
-            background: linear-gradient(to right, transparent, rgba(233,182,73,0.4), transparent);
-            margin: 1.2rem 0;
+            background: linear-gradient(to right, transparent, rgba(233,182,73,0.35), transparent);
+            margin: 1.4rem 0;
+            position: relative;
+        }
+        .divider::after {
+            content: '◆';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(8, 20, 13, 0.98);
+            padding: 0 12px;
+            color: rgba(233,182,73,0.3);
+            font-size: 0.5rem;
+        }
+
+        /* Modal icon circles */
+        .modal-icon-circle {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(233,182,73,0.12) 0%, rgba(233,182,73,0.03) 70%);
+            border: 1px solid rgba(233,182,73,0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .modal-icon-circle::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 1px solid rgba(233,182,73,0.08);
+        }
+        .modal-icon-circle i {
+            color: var(--gold-mid);
+            font-size: 1.4rem;
+            filter: drop-shadow(0 0 8px rgba(233,182,73,0.3));
+        }
+
+        /* Info card inside modals */
+        .modal-info-card {
+            border: 1px solid rgba(233,182,73,0.18);
+            border-radius: 14px;
+            padding: 1.2rem 1rem;
+            background: rgba(233,182,73,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 3px; height: 100%;
+            background: linear-gradient(to bottom, var(--gold-light), transparent);
+            border-radius: 3px 0 0 3px;
         }
 
         .elegant-input {
             width: 100%; display: block;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(233,182,73,0.22);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(233,182,73,0.18);
             color: #fff;
-            padding: 13px 14px;
-            border-radius: 10px;
+            padding: 14px 16px;
+            border-radius: 12px;
             font-family: 'Montserrat', sans-serif;
             font-size: 0.88rem;
             margin-bottom: 0.9rem;
             -webkit-appearance: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
         .elegant-input:focus {
             outline: none;
             border-color: var(--gold-mid);
+            background: rgba(233,182,73,0.04);
+            box-shadow: 0 0 20px rgba(233,182,73,0.08);
         }
-        .elegant-input::placeholder { color: rgba(255,255,255,0.3); }
+        .elegant-input::placeholder { color: rgba(255,255,255,0.28); }
         option { background: #081410; }
 
         .btn-modal {
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%; padding: 0.85rem;
+            width: 100%; padding: 0.9rem;
             border-radius: 50px;
-            border: 1px solid rgba(233,182,73,0.45);
-            background: rgba(233,182,73,0.08);
+            border: 1px solid rgba(233,182,73,0.4);
+            background: linear-gradient(135deg, rgba(233,182,73,0.1) 0%, rgba(233,182,73,0.04) 100%);
             color: var(--gold-light);
             font-family: 'Montserrat', sans-serif;
             font-size: 0.78rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 0.5rem;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            margin-top: 0.8rem;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-modal:hover { background: rgba(233,182,73,0.18); }
+        .btn-modal::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(249,217,118,0.12), transparent);
+            transition: 0.6s;
+        }
+        .btn-modal:hover::before { left: 100%; }
+        .btn-modal:hover {
+            background: linear-gradient(135deg, rgba(233,182,73,0.2) 0%, rgba(233,182,73,0.08) 100%);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 25px rgba(233,182,73,0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Color swatches for dress code */
+        .color-swatch {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 2px solid rgba(233,182,73,0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.1);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .color-swatch:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+        .color-swatch.reserved::after {
+            content: '✗';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .mask-suggestion {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            border-radius: 30px;
+            background: rgba(233,182,73,0.06);
+            border: 1px solid rgba(233,182,73,0.15);
+            color: rgba(233,182,73,0.7);
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 0.6rem;
+        }
 
         /* ══ BOTÓN DE MÚSICA (en la tarjeta) ══ */
         .music-btn {
@@ -1045,26 +1207,31 @@
 <!-- ═══ MODAL: FECHA Y LUGAR ═══ -->
 <div id="modal-fecha" class="modal-overlay" onclick="handleOverlay(event,'modal-fecha')">
     <div class="modal-card">
+        <div class="modal-shimmer"></div>
         <div class="handle"></div>
         <button class="btn-close" onclick="closeModal('modal-fecha')"><i class="fas fa-times"></i></button>
 
-        <h3 class="font-script text-gold mb-5" style="font-size:clamp(2rem,9vw,2.8rem);">Cuándo y Dónde</h3>
+        <h3 class="font-script text-gold" style="font-size:clamp(2rem,9vw,2.8rem); margin-bottom:1.2rem;">Cuándo y Dónde</h3>
 
+        <div class="modal-icon-circle">
+            <i class="far fa-calendar"></i>
+        </div>
         <div class="font-serif">
-            <i class="far fa-calendar text-xl mb-2" style="color:var(--gold-mid);"></i>
-            <p class="text-white" style="font-size:1.25rem;">Viernes, 24 de Octubre</p>
-            <p class="text-gray-300 mt-1" style="font-size:1.1rem;">2026 &nbsp;·&nbsp; 7:00 PM - 12:00 AM</p>
+            <p class="text-white" style="font-size:1.3rem; font-weight:600; margin-bottom:0.3rem;">Viernes, 24 de Octubre</p>
+            <p style="color:rgba(233,182,73,0.6); font-size:1rem; letter-spacing:2px;">2026 &nbsp;·&nbsp; 7:00 PM</p>
         </div>
 
         <div class="divider"></div>
 
+        <div class="modal-icon-circle">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
         <div class="font-serif">
-            <i class="fas fa-map-marker-alt text-xl mb-2" style="color:var(--gold-mid);"></i>
-            <p class="text-white" style="font-size:1.25rem;">Diez Hotel - Terraza Corales</p>
-            <p class="text-gray-400 text-sm mt-1"></p>
+            <p class="text-white" style="font-size:1.25rem; font-weight:600; margin-bottom:0.3rem;">Diez Hotel</p>
+            <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; letter-spacing:1px;">Terraza Corales</p>
         </div>
 
-        <a href="https://maps.app.goo.gl/Urdsnv1wBKVLVngK6" target="_blank" rel="noopener" class="btn-modal mt-4" style="text-decoration:none;"><i class="fas fa-map"></i> Abrir en el Mapa</a>
+        <a href="https://maps.app.goo.gl/Urdsnv1wBKVLVngK6" target="_blank" rel="noopener" class="btn-modal" style="text-decoration:none; margin-top:1.2rem;"><i class="fas fa-map"></i> Abrir en el Mapa</a>
     </div>
 </div>
 
@@ -1072,18 +1239,40 @@
 <!-- ═══ MODAL: VESTIMENTA ═══ -->
 <div id="modal-vestimenta" class="modal-overlay" onclick="handleOverlay(event,'modal-vestimenta')">
     <div class="modal-card">
+        <div class="modal-shimmer"></div>
         <div class="handle"></div>
         <button class="btn-close" onclick="closeModal('modal-vestimenta')"><i class="fas fa-times"></i></button>
 
-        <h3 class="font-script text-gold mb-4" style="font-size:clamp(2rem,9vw,2.8rem);">Código de Vestimenta</h3>
+        <h3 class="font-script text-gold" style="font-size:clamp(2rem,9vw,2.8rem); margin-bottom:1.2rem;">Código de Vestimenta</h3>
 
-        <div class="flex justify-center gap-4 mb-4">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #000; border: 2px solid var(--gold-mid); box-shadow: 0 0 10px rgba(0,0,0,0.5);"></div>
-            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #fff; border: 2px solid var(--gold-mid); box-shadow: 0 0 10px rgba(255,255,255,0.2);"></div>
+        <div class="modal-icon-circle">
+            <i class="fas fa-tshirt"></i>
         </div>
 
-        <p class="font-serif text-white text-xl mb-2 tracking-widest uppercase">Negro y Blanco</p>
-        <p class="text-gray-300 text-sm leading-relaxed mb-2">Para mantener la elegancia y la magia de nuestra fiesta, te pedimos asistir con vestimenta en tonos negro y/o blanco.</p>
+        <!-- Reserved colors -->
+        <p class="font-serif text-white" style="font-size:1.1rem; font-weight:600; margin-bottom:0.8rem; letter-spacing:1px;">Colores Reservados para la Gala</p>
+        <div style="display:flex; justify-content:center; gap:1.2rem; margin-bottom:0.8rem;">
+            <div style="text-align:center;">
+                <div class="color-swatch reserved" style="background: linear-gradient(135deg, #5a8f5c, #3d6b3f); margin: 0 auto 0.4rem;"></div>
+                <span style="color:rgba(255,255,255,0.45); font-size:0.65rem; text-transform:uppercase; letter-spacing:1px;">Verde</span>
+            </div>
+            <div style="text-align:center;">
+                <div class="color-swatch reserved" style="background: linear-gradient(135deg, #fa8072, #e8725f); margin: 0 auto 0.4rem;"></div>
+                <span style="color:rgba(255,255,255,0.45); font-size:0.65rem; text-transform:uppercase; letter-spacing:1px;">Salmón</span>
+            </div>
+        </div>
+        <p style="color:rgba(255,255,255,0.4); font-size:0.75rem; margin-bottom:1rem; font-style:italic;">Estos tonos están reservados para las quinceañeras</p>
+
+        <div class="divider"></div>
+
+        <p class="font-serif text-white" style="font-size:1.05rem; margin-bottom:0.5rem; margin-top:0.2rem;">Te invitamos a venir en cualquier otro tono</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:0.82rem; line-height:1.6;">Elige tu mejor look para acompañarnos en esta noche especial.</p>
+
+        <!-- Mask suggestion -->
+        <div class="mask-suggestion" style="margin-top:1.2rem;">
+            <i class="fas fa-mask" style="font-size:0.85rem;"></i>
+            <span>Se sugiere llevar máscara</span>
+        </div>
     </div>
 </div>
 
@@ -1091,19 +1280,22 @@
 <!-- ═══ MODAL: LLUVIA DE SOBRES ═══ -->
 <div id="modal-regalos" class="modal-overlay" onclick="handleOverlay(event,'modal-regalos')">
     <div class="modal-card">
+        <div class="modal-shimmer"></div>
         <div class="handle"></div>
         <button class="btn-close" onclick="closeModal('modal-regalos')"><i class="fas fa-times"></i></button>
 
-        <h3 class="font-script text-gold mb-4" style="font-size:clamp(2rem,9vw,2.8rem);">Sugerencia de Regalo</h3>
+        <h3 class="font-script text-gold" style="font-size:clamp(2rem,9vw,2.8rem); margin-bottom:1.2rem;">Sugerencia de Regalo</h3>
 
-        <i class="fas fa-gift text-4xl mb-4" style="color:var(--gold-mid);filter:drop-shadow(0 0 10px rgba(233,182,73,0.35));"></i>
+        <div class="modal-icon-circle">
+            <i class="fas fa-gift"></i>
+        </div>
 
-        <p class="font-serif text-white text-lg mb-2">El mejor regalo es tu presencia.</p>
-        <p class="text-gray-300 text-sm leading-relaxed mb-4">Si deseas tener un detalle adicional, te sugerimos:</p>
+        <p class="font-serif text-white" style="font-size:1.15rem; font-weight:600; margin-bottom:0.4rem;">El mejor regalo es tu presencia.</p>
+        <p style="color:rgba(255,255,255,0.5); font-size:0.85rem; line-height:1.6; margin-bottom:1.2rem;">Si deseas tener un detalle adicional, te sugerimos:</p>
 
-        <div style="border:1px solid rgba(233,182,73,0.2);border-radius:12px;padding:1rem;">
-            <p class="text-white text-sm tracking-widest uppercase font-semibold mb-1">Lluvia de Sobres</p>
-            <p class="text-gray-400 text-xs">Habrá un buzón especial en la recepción del evento.</p>
+        <div class="modal-info-card">
+            <p style="color:var(--gold-light); font-size:0.8rem; letter-spacing:3px; text-transform:uppercase; font-weight:600; margin-bottom:0.4rem;">Lluvia de Sobres</p>
+            <p style="color:rgba(255,255,255,0.45); font-size:0.78rem;">Habrá un buzón especial en la recepción del evento.</p>
         </div>
     </div>
 </div>
@@ -1112,11 +1304,12 @@
 <!-- ═══ MODAL: CONFIRMAR ASISTENCIA ═══ -->
 <div id="modal-asistencia" class="modal-overlay" onclick="handleOverlay(event,'modal-asistencia')">
     <div class="modal-card">
+        <div class="modal-shimmer"></div>
         <div class="handle"></div>
         <button class="btn-close" onclick="closeModal('modal-asistencia')"><i class="fas fa-times"></i></button>
 
-        <h3 class="font-script text-gold mb-2" style="font-size:clamp(2rem,9vw,2.8rem);">Confirmación</h3>
-        <p class="text-gray-400 text-xs mb-5">Por favor confirma antes del 17 de Octubre.</p>
+        <h3 class="font-script text-gold" style="font-size:clamp(2rem,9vw,2.8rem); margin-bottom:0.5rem;">Confirmación</h3>
+        <p style="color:rgba(255,255,255,0.4); font-size:0.75rem; margin-bottom:1.5rem; letter-spacing:1px;">Por favor confirma antes del 17 de Octubre</p>
 
         <form id="form-asistencia" onsubmit="handleAsistencia(event)" class="text-left">
             <input type="text" placeholder="Tu Nombre Completo" required class="elegant-input">
@@ -1131,12 +1324,12 @@
             </button>
         </form>
 
-        <div id="mensaje-exito" class="hidden mt-5 text-center">
-            <div style="width:52px;height:52px;border-radius:50%;background:rgba(74,222,128,0.15);display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.8rem;">
-                <i class="fas fa-check text-xl text-green-400"></i>
+        <div id="mensaje-exito" class="hidden" style="margin-top:1.5rem; text-align:center;">
+            <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle, rgba(74,222,128,0.15) 0%, rgba(74,222,128,0.05) 70%);border:1px solid rgba(74,222,128,0.2);display:inline-flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+                <i class="fas fa-check" style="font-size:1.2rem; color:#4ade80;"></i>
             </div>
-            <p class="font-serif text-white text-lg">¡Gracias por responder!</p>
-            <p class="text-gray-400 text-xs mt-1">Tu respuesta fue registrada.</p>
+            <p class="font-serif text-white" style="font-size:1.15rem;">¡Gracias por responder!</p>
+            <p style="color:rgba(255,255,255,0.4); font-size:0.75rem; margin-top:0.3rem;">Tu respuesta fue registrada.</p>
         </div>
     </div>
 </div>
@@ -1213,11 +1406,7 @@
 
     /* ── PASO 1: Click en "Abrir Invitación" ── */
     function startExperience() {
-        // Iniciar música inmediatamente
-        bgMusic.volume = 0.35;
-        bgMusic.play().then(() => {
-            isMusicPlaying = true;
-        }).catch(err => console.log('Autoplay blocked', err));
+        // NO iniciar música aquí — se inicia después del video
 
         if (videoReady) {
             // Video cacheado → lanzar directo
@@ -1275,11 +1464,33 @@
             screenCard.classList.add('active');
             document.body.style.background = '';
 
+            // Iniciar música de Dmitri DESPUÉS del video
+            bgMusic.volume = 0;
+            bgMusic.play().then(() => {
+                isMusicPlaying = true;
+                // Fade in suave del volumen
+                let vol = 0;
+                const fadeIn = setInterval(() => {
+                    vol += 0.02;
+                    if (vol >= 0.35) {
+                        vol = 0.35;
+                        clearInterval(fadeIn);
+                    }
+                    bgMusic.volume = vol;
+                }, 80);
+            }).catch(err => console.log('Music autoplay blocked', err));
+
             // Mostrar botón de música
             musicBtn.classList.add('visible');
             if (isMusicPlaying) {
                 musicBtn.classList.add('playing');
             }
+            // Actualizar estado del botón después de un momento
+            setTimeout(() => {
+                if (isMusicPlaying) {
+                    musicBtn.classList.add('playing');
+                }
+            }, 500);
 
             // Iniciar estrellas
             initStars();
