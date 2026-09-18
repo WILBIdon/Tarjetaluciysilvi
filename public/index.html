@@ -1317,14 +1317,14 @@
         <p style="color:rgba(255,255,255,0.4); font-size:0.88rem; margin-bottom:1.5rem; letter-spacing:1px;">Por favor confirma antes del 17 de Octubre</p>
 
         <form id="form-asistencia" onsubmit="handleAsistencia(event)" class="text-left">
-            <input type="text" placeholder="Tu Nombre Completo" required class="elegant-input">
-            <select required class="elegant-input">
+            <input type="text" id="input-nombre" placeholder="Tu Nombre Completo" required class="elegant-input">
+            <select id="input-asistencia" required class="elegant-input">
                 <option value="" disabled selected>¿Asistirás?</option>
                 <option value="si">¡Sí, con gusto acompañaré!</option>
                 <option value="no">Lo siento, no podré asistir</option>
             </select>
 
-            <button type="submit" class="btn-modal">
+            <button type="submit" class="btn-modal" id="btn-enviar">
                 Enviar Confirmación &nbsp;<i class="fas fa-paper-plane"></i>
             </button>
         </form>
@@ -1549,13 +1549,50 @@
     function handleAsistencia(e) {
         e.preventDefault();
         const form = document.getElementById('form-asistencia');
+        const nombre = document.getElementById('input-nombre').value.trim();
+        const asistencia = document.getElementById('input-asistencia').value;
+        const asistenciaTexto = asistencia === 'si' ? 'Sí, asistirá' : 'No podrá asistir';
+
+        // Deshabilitar botón mientras envía
+        const btnEnviar = document.getElementById('btn-enviar');
+        btnEnviar.style.pointerEvents = 'none';
+        btnEnviar.innerHTML = 'Enviando... &nbsp;<i class="fas fa-spinner fa-spin"></i>';
+
+        // 1. Enviar a Google Sheets vía Apps Script
+        const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyiQqTKPWC-xBOfvKVJxUOsqw6SvVkV5qSwDp75DVHEz0ImpYPlCBRUv9wPxzaNdVInhA/exec';
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('asistencia', asistenciaTexto);
+        formData.append('fecha', new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }));
+
+        fetch(SHEETS_URL, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors'
+        }).catch(err => console.log('Sheets error:', err));
+
+        // 2. Enviar a WhatsApp
+        const whatsappMsg = encodeURIComponent(
+            `🌟 *Confirmación de Asistencia - 15 Años Luciana & Silvana* 🌟\n\n` +
+            `👤 *Nombre:* ${nombre}\n` +
+            `✅ *Asistencia:* ${asistenciaTexto}\n` +
+            `📅 *Fecha de confirmación:* ${new Date().toLocaleDateString('es-CO')}`
+        );
+        const whatsappURL = `https://wa.me/573008724559?text=${whatsappMsg}`;
+
+        // Mostrar animación de éxito
         form.style.opacity = '0';
         form.style.transition = 'opacity 0.3s';
         setTimeout(() => {
             form.style.display = 'none';
             document.getElementById('mensaje-exito').classList.remove('hidden');
+
+            // Abrir WhatsApp después de un momento
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+            }, 800);
         }, 300);
-        setTimeout(() => closeModal('modal-asistencia'), 3200);
+        setTimeout(() => closeModal('modal-asistencia'), 4500);
     }
 
     /* ══════════════════════════════════════
