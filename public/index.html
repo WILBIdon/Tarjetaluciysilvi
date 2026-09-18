@@ -1552,24 +1552,41 @@
         const nombre = document.getElementById('input-nombre').value.trim();
         const asistencia = document.getElementById('input-asistencia').value;
         const asistenciaTexto = asistencia === 'si' ? 'Sí, asistirá' : 'No podrá asistir';
+        const fechaHora = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
         // Deshabilitar botón mientras envía
         const btnEnviar = document.getElementById('btn-enviar');
         btnEnviar.style.pointerEvents = 'none';
         btnEnviar.innerHTML = 'Enviando... &nbsp;<i class="fas fa-spinner fa-spin"></i>';
 
-        // 1. Enviar a Google Sheets vía Apps Script
+        // 1. Enviar a Google Sheets vía iframe oculto (evita problemas CORS)
         const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyiQqTKPWC-xBOfvKVJxUOsqw6SvVkV5qSwDp75DVHEz0ImpYPlCBRUv9wPxzaNdVInhA/exec';
-        const formData = new FormData();
-        formData.append('nombre', nombre);
-        formData.append('asistencia', asistenciaTexto);
-        formData.append('fecha', new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' }));
-
-        fetch(SHEETS_URL, {
-            method: 'POST',
-            body: formData,
-            mode: 'no-cors'
-        }).catch(err => console.log('Sheets error:', err));
+        try {
+            let iframe = document.getElementById('hidden-iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'hidden-iframe';
+                iframe.name = 'hidden-iframe';
+                iframe.style.display = 'none';
+                document.body.appendChild(iframe);
+            }
+            const hiddenForm = document.createElement('form');
+            hiddenForm.method = 'POST';
+            hiddenForm.action = SHEETS_URL;
+            hiddenForm.target = 'hidden-iframe';
+            hiddenForm.style.display = 'none';
+            const campos = { nombre: nombre, asistencia: asistenciaTexto, fecha: fechaHora };
+            Object.keys(campos).forEach(function(key) {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = key;
+                inp.value = campos[key];
+                hiddenForm.appendChild(inp);
+            });
+            document.body.appendChild(hiddenForm);
+            hiddenForm.submit();
+            setTimeout(function() { hiddenForm.remove(); }, 3000);
+        } catch(err) { console.log('Sheets error:', err); }
 
         // 2. Enviar a WhatsApp
         const whatsappMsg = encodeURIComponent(
