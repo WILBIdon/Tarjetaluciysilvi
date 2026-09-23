@@ -221,11 +221,29 @@
         }
 
         #screen-video.fade-out {
-            animation: videoFadeOut 1.2s ease forwards;
+            animation: videoFadeOut 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         @keyframes videoFadeOut {
-            0%   { opacity: 1; }
+            0%   { opacity: 1; transform: scale(1); filter: brightness(1); }
+            60%  { opacity: 0.6; transform: scale(1.03); filter: brightness(1.3); }
+            100% { opacity: 0; transform: scale(1.08); filter: brightness(2); }
+        }
+
+        /* Flash dorado entre video y tarjeta */
+        .golden-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 8500;
+            background: radial-gradient(ellipse at center, rgba(233,182,73,0.4) 0%, rgba(184,134,11,0.2) 40%, transparent 70%);
+            opacity: 0;
+            pointer-events: none;
+            animation: goldenFlash 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes goldenFlash {
+            0%   { opacity: 0; }
+            30%  { opacity: 1; }
             100% { opacity: 0; }
         }
 
@@ -276,12 +294,13 @@
 
         #screen-card.active {
             display: block;
-            animation: cardReveal 1.5s ease forwards;
+            animation: cardReveal 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes cardReveal {
-            from { opacity: 0; }
-            to   { opacity: 1; }
+            0%   { opacity: 0; transform: scale(0.97); }
+            40%  { opacity: 0.5; }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         /* ══ FONDO: imagen cubre todo ══ */
@@ -1432,11 +1451,19 @@
     function transitionToCard() {
         screenVideo.classList.add('fade-out');
 
+        // Flash dorado entre pantallas
+        const flash = document.createElement('div');
+        flash.className = 'golden-flash';
+        document.body.appendChild(flash);
+
         setTimeout(() => {
             screenVideo.style.display = 'none';
             screenVideo.classList.remove('active', 'fade-out');
             screenCard.classList.add('active');
             document.body.style.background = '';
+
+            // Quitar flash después de la animación
+            setTimeout(() => flash.remove(), 1800);
 
             // Iniciar música de Dmitri DESPUÉS del video
             bgMusic.volume = 0;
@@ -1468,7 +1495,7 @@
 
             // Iniciar estrellas
             initStars();
-        }, 1200);
+        }, 1400);
     }
 
     /* ── Toggle música ── */
