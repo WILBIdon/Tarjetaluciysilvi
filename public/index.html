@@ -1533,34 +1533,26 @@
         btnEnviar.style.pointerEvents = 'none';
         btnEnviar.innerHTML = 'Enviando... &nbsp;<i class="fas fa-spinner fa-spin"></i>';
 
-        // 1. Enviar a Google Sheets vía iframe oculto (evita problemas CORS)
+        // 1. Enviar a Google Sheets (doble método: fetch + GET fallback)
         const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyiQqTKPWC-xBOfvKVJxUOsqw6SvVkV5qSwDp75DVHEz0ImpYPlCBRUv9wPxzaNdVInhA/exec';
+        const campos = { nombre: nombre, asistencia: asistenciaTexto, fecha: fechaHora };
+
+        // Método 1: fetch con POST
         try {
-            let iframe = document.getElementById('hidden-iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'hidden-iframe';
-                iframe.name = 'hidden-iframe';
-                iframe.style.display = 'none';
-                document.body.appendChild(iframe);
-            }
-            const hiddenForm = document.createElement('form');
-            hiddenForm.method = 'POST';
-            hiddenForm.action = SHEETS_URL;
-            hiddenForm.target = 'hidden-iframe';
-            hiddenForm.style.display = 'none';
-            const campos = { nombre: nombre, asistencia: asistenciaTexto, fecha: fechaHora };
-            Object.keys(campos).forEach(function(key) {
-                const inp = document.createElement('input');
-                inp.type = 'hidden';
-                inp.name = key;
-                inp.value = campos[key];
-                hiddenForm.appendChild(inp);
-            });
-            document.body.appendChild(hiddenForm);
-            hiddenForm.submit();
-            setTimeout(function() { hiddenForm.remove(); }, 3000);
-        } catch(err) { console.log('Sheets error:', err); }
+            fetch(SHEETS_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(campos).toString()
+            }).catch(function(err) { console.log('Fetch POST error:', err); });
+        } catch(err) { console.log('Sheets fetch error:', err); }
+
+        // Método 2: GET fallback (por si POST falla con redirecciones)
+        try {
+            const params = new URLSearchParams(campos).toString();
+            const img = new Image();
+            img.src = SHEETS_URL + '?' + params;
+        } catch(err) { console.log('Sheets GET fallback error:', err); }
 
         // 2. Enviar a WhatsApp
         const whatsappMsg = encodeURIComponent(
